@@ -100,14 +100,17 @@ def button(update: Update, context: CallbackContext) -> None:
     elif query.data == 'relatorio_usuarios':
         resposta = executar_comando(['/opt/rustymanager/manager', '--users-report'])
         query.edit_message_text(text=format_report(resposta))
+        query.edit_message_reply_markup(reply_markup=main_menu())
 
     elif query.data == 'relatorio_expirados':
         resposta = executar_comando(['/opt/rustymanager/manager', '--expired-report'])
         query.edit_message_text(text=format_report(resposta))
+        query.edit_message_reply_markup(reply_markup=main_menu())
 
     elif query.data == 'relatorio_online':
         resposta = executar_comando(['/opt/rustymanager/manager', '--online-report'])
         query.edit_message_text(text=format_report(resposta))
+        query.edit_message_reply_markup(reply_markup=main_menu())
 
 def handle_message(update: Update, context: CallbackContext) -> None:
     if update.effective_user.id != ALLOWED_USER_ID:
@@ -148,6 +151,8 @@ def handle_message(update: Update, context: CallbackContext) -> None:
         resposta = executar_comando(comando)
         update.message.reply_text(resposta)
 
+        # Voltar ao menu principal
+        update.message.reply_text('Escolha uma ação:', reply_markup=main_menu())
         context.user_data.clear()
 
     elif action == 'esperando_usuario_validade':
@@ -167,6 +172,8 @@ def handle_message(update: Update, context: CallbackContext) -> None:
         resposta = executar_comando(comando)
         update.message.reply_text(resposta)
 
+        # Voltar ao menu principal
+        update.message.reply_text('Escolha uma ação:', reply_markup=main_menu())
         context.user_data.clear()
 
     elif action == 'esperando_usuario_limite':
@@ -186,6 +193,8 @@ def handle_message(update: Update, context: CallbackContext) -> None:
         resposta = executar_comando(comando)
         update.message.reply_text(resposta)
 
+        # Voltar ao menu principal
+        update.message.reply_text('Escolha uma ação:', reply_markup=main_menu())
         context.user_data.clear()
 
     elif action == 'esperando_usuario_senha':
@@ -201,6 +210,8 @@ def handle_message(update: Update, context: CallbackContext) -> None:
         resposta = executar_comando(comando)
         update.message.reply_text(resposta)
 
+        # Voltar ao menu principal
+        update.message.reply_text('Escolha uma ação:', reply_markup=main_menu())
         context.user_data.clear()
 
     elif action == 'esperando_usuario_remover':
@@ -209,6 +220,8 @@ def handle_message(update: Update, context: CallbackContext) -> None:
         resposta = executar_comando(comando)
         update.message.reply_text(resposta)
 
+        # Voltar ao menu principal
+        update.message.reply_text('Escolha uma ação:', reply_markup=main_menu())
         context.user_data.clear()
 
     elif action == 'esperando_teste_duracao':
@@ -221,6 +234,8 @@ def handle_message(update: Update, context: CallbackContext) -> None:
         resposta = executar_comando(comando)
         update.message.reply_text(resposta)
 
+        # Voltar ao menu principal
+        update.message.reply_text('Escolha uma ação:', reply_markup=main_menu())
         context.user_data.clear()
 
 def format_report(data: str) -> str:
@@ -257,4 +272,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
