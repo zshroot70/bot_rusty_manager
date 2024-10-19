@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Atualiza o repo e o sistema, e depois instala o wget de forma silenciosa
+apt update -qq && apt upgrade -y -qq && apt install wget -y -qq
+
+# Cria uma pasta pro bot em /opt
+mkdir -p /opt/bot_rusty
+
+# Faz o download do bot em /opt/bot_rusty
+wget -q https://github.com/zshroot70/bot_rusty_manager/raw/refs/heads/main/bot_rusty_manager.py -O /opt/bot_rusty/bot_rusty_manager.py
+
+# Pergunta pelo token do bot
+read -p "Digite o token do seu bot do Telegram: " TOKEN
+# Pergunta pelo ID do usuário
+read -p "Digite o seu ID de usuário do Telegram: " USER_ID
+
+# Caminho para o arquivo do bot
+BOT_FILE="/opt/bot_rusty/bot_rusty_manager.py"
+
+# Substitui o token e o ID de usuário no arquivo
+sed -i "s/SEU_TOKEN/$TOKEN/" "$BOT_FILE"
+sed -i "s/123456789/$USER_ID/" "$BOT_FILE"
+
+# Criando o arquivo de serviço systemd
+SERVICE_FILE="/etc/systemd/system/telegram_bot.service"
+
+cat <<EOL > "$SERVICE_FILE"
+[Unit]
+Description=Telegram Bot Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 $BOT_FILE
+WorkingDirectory=$(dirname "$BOT_FILE")
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOL
+
+# Habilitando e iniciando o serviço
+systemctl enable telegram_bot.service > /dev/null 2>&1
+systemctl start telegram_bot.service > /dev/null 2>&1
+
+echo "Bot configurado e serviço iniciado."
