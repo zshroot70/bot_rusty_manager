@@ -26,11 +26,13 @@ read -p "Digite o token do seu bot do Telegram: " TOKEN
 read -p "Digite o seu ID de usuário do Telegram: " USER_ID
 
 # Verifica a versão do Debian ou Ubuntu e instala o python-telegram-bot
-if [[ $(lsb_release -is) == "Debian" ]] && [[ $(lsb_release -sr) =~ ^(12)$ ]]; then
+if [[ $(lsb_release -is) == "Debian" ]] && [[ $(lsb_release -sr) == "12" ]]; then
     pip install python-telegram-bot==13.5 --break-system-packages
-if [[ $(lsb_release -is) == "Debian" ]] && [[ $(lsb_release -sr) =~ ^(11)$ ]]; then
+elif [[ $(lsb_release -is) == "Debian" ]] && [[ $(lsb_release -sr) == "11" ]]; then
     pip install python-telegram-bot==13.5
-elif [[ $(lsb_release -is) == "Ubuntu" ]] && [[ $(lsb_release -sr) =~ ^(18\.04|[0-9]\.[0-9])$ ]]; then
+elif [[ $(lsb_release -is) == "Ubuntu" ]] && [[ $(lsb_release -sr) =~ ^(18\.04|20\.04)$ ]]; then
+    pip install python-telegram-bot==13.5
+elif [[ $(lsb_release -is) == "Ubuntu" ]] && [[ $(lsb_release -sr) == "21.10" ]]; then
     pip install python-telegram-bot==13.5
 else
     echo "Sistema não suportado."
