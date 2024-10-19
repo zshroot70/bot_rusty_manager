@@ -1,28 +1,38 @@
 #!/bin/bash
 
 # Atualiza o repo e o sistema, e depois instala o wget de forma silenciosa
-apt update -qq && apt upgrade -y -qq && apt install wget python3 python3-pip -y -qq
+if ! apt update -qq && apt upgrade -y -qq; then
+    echo "Erro ao atualizar o sistema."
+    exit 1
+fi
+
+if ! apt install wget python3 python3-pip -y -qq; then
+    echo "Erro ao instalar pacotes necessários."
+    exit 1
+fi
 
 # Cria uma pasta pro bot em /opt
 mkdir -p /opt/bot_rusty
 
 # Faz o download do bot em /opt/bot_rusty
-wget -q https://github.com/zshroot70/bot_rusty_manager/raw/refs/heads/main/bot_rusty_manager.py -O /opt/bot_rusty/bot_rusty_manager.py
+if ! wget -q https://github.com/zshroot70/bot_rusty_manager/raw/refs/heads/main/bot_rusty_manager.py -O /opt/bot_rusty/bot_rusty_manager.py; then
+    echo "Erro ao baixar o bot."
+    exit 1
+fi
 
 # Pergunta pelo token do bot
 read -p "Digite o token do seu bot do Telegram: " TOKEN
 # Pergunta pelo ID do usuário
 read -p "Digite o seu ID de usuário do Telegram: " USER_ID
 
-# Verifica a versão do Debian
+# Verifica a versão do Debian ou Ubuntu e instala o python-telegram-bot
 if [[ $(lsb_release -is) == "Debian" ]] && [[ $(lsb_release -sr) =~ ^(11|12)$ ]]; then
-    # Instala o python-telegram-bot
     pip install python-telegram-bot==13.5 --break-system-packages
-
-# Verifica a versão do Ubuntu
 elif [[ $(lsb_release -is) == "Ubuntu" ]] && [[ $(lsb_release -sr) =~ ^(18\.04|[0-9]\.[0-9])$ ]]; then
-    # Instala o python-telegram-bot
     pip install python-telegram-bot==13.5
+else
+    echo "Sistema não suportado."
+    exit 1
 fi
 
 # Caminho para o arquivo do bot
@@ -44,13 +54,17 @@ After=network.target
 ExecStart=/usr/bin/python3 $BOT_FILE
 WorkingDirectory=$(dirname "$BOT_FILE")
 Restart=always
+StandardOutput=append:/var/log/telegram_bot.log
+StandardError=append:/var/log/telegram_bot.log
 
 [Install]
 WantedBy=multi-user.target
 EOL
 
 # Habilitando e iniciando o serviço
-systemctl enable telegram_bot.service > /dev/null 2>&1
-systemctl start telegram_bot.service > /dev/null 2>&1
+if ! systemctl enable telegram_bot.service > /dev/null 2>&1 || ! systemctl start telegram_bot.service > /dev/null 2>&1; then
+    echo "Erro ao habilitar ou iniciar o serviço."
+    exit 1
+fi
 
 echo "Bot configurado e serviço iniciado."
