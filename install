@@ -14,6 +14,21 @@ read -p "Digite o token do seu bot do Telegram: " TOKEN
 # Pergunta pelo ID do usuário
 read -p "Digite o seu ID de usuário do Telegram: " USER_ID
 
+# Verifica a versão do Debian
+if [[ $(lsb_release -is) == "Debian" ]] && [[ $(lsb_release -sr) =~ ^(11|12)$ ]]; then
+    # Instala o pip
+    apt install python3-pip -y -qq
+    # Instala o python-telegram-bot
+    pip3 install python-telegram-bot==13.5 --break-system-packages
+
+# Verifica a versão do Ubuntu
+elif [[ $(lsb_release -is) == "Ubuntu" ]] && [[ $(lsb_release -sr) =~ ^(18\.04|[0-9]\.[0-9])$ ]]; then
+    # Instala o pip
+    apt install python3-pip -y -qq
+    # Instala o python-telegram-bot
+    pip3 install python-telegram-bot==13.5
+fi
+
 # Caminho para o arquivo do bot
 BOT_FILE="/opt/bot_rusty/bot_rusty_manager.py"
 
