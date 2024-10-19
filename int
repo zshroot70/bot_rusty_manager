@@ -1,0 +1,5 @@
+#!/bin/bash
+wget https://raw.githubusercontent.com/zshroot70/bot_rusty_manager/refs/heads/main/install -O /tmp/install
+chmod +x /tmp/install
+./tmp/install
+rm -fr /tmp/install
