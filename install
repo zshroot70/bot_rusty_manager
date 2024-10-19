@@ -49,7 +49,7 @@ sed -i "s/123456789/$USER_ID/" "$BOT_FILE"
 # Criando o arquivo de serviço systemd
 SERVICE_FILE="/etc/systemd/system/telegram_bot.service"
 
-cat <<EOL > "$SERVICE_FILE"
+cat > "$SERVICE_FILE" << EOL
 [Unit]
 Description=Telegram Bot Service
 After=network.target
